@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private bool isGrounded;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,7 +33,13 @@ public class PlayerMovement : MonoBehaviour
         
         RotateCamera();
         CheckSprint();
-        CheckJump();
+        CheckDance();
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            animator.SetTrigger("Jump");
+            Invoke("CheckJump", 0.55f);
+        }
     }
 
     private void FixedUpdate()
@@ -53,9 +60,9 @@ public class PlayerMovement : MonoBehaviour
         if (isWalking)
         {
             Vector3 moveDirection = cameraTransform.forward * movement.z + cameraTransform.right * movement.x;
-            moveDirection.y = 0;
+            moveDirection.y = 0f;
 
-            Vector3 move = moveDirection.normalized * speed * Time.fixedDeltaTime;
+            Vector3 move = moveDirection.normalized * speed * Time.deltaTime;
             rb.MovePosition(rb.position + move);
         }
     }
@@ -88,11 +95,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        rb.AddForce(Vector3.up * 800f, ForceMode.Impulse);
+    }
+
+    private void CheckDance()
+    {
+        if (isGrounded && Input.GetKeyDown(KeyCode.F))
         {
-            Debug.Log("Jumping");
-            rb.AddForce(Vector3.up * 20000f, ForceMode.Impulse);
-            animator.SetTrigger("Jump");
+            animator.SetTrigger("Dance");
         }
     }
 
@@ -100,6 +110,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ground"))
         {
+            Debug.Log("Touch Grass");
             isGrounded = true;
         }
     }
@@ -108,7 +119,16 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ground"))
         {
+            Debug.Log("Jumping");
             isGrounded = false;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Deathplane"))
+        {
+            transform.position = new Vector3(0, 0.26f, 0);
         }
     }
 }
