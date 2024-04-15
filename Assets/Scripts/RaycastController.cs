@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//////////////////////////////////////////////
+//Assignment/Lab/Project: Animations
+//Name: Hunter Wright
+//Section: SGD.213.2172
+//Instructor: Brian Sowers
+//Date: 4/15/2024
+/////////////////////////////////////////////
+
+
 public class RaycastController : MonoBehaviour
 {
     RaycastHit hit;
